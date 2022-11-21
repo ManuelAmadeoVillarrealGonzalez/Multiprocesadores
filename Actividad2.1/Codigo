@@ -1,0 +1,32 @@
+    #pragma omp parallel
+    {
+        #pragma omp for nowait
+
+            for(int xx = 0; xx <= ancho; xx++){
+                for(int yy = 0; yy <= alto; yy++){
+                    avgB = avgG = avgR = 0;
+                    ile = 0;
+
+                    for(int x = xx; x < ancho && x < xx + 7; x++){
+                        for(int y = yy; y < alto && y < yy + 7; y++){
+                            avgB += ptr[(x) * ancho + (y) ];
+                            avgG += ptr[(x) * ancho + (y) + 1];
+                            avgR += ptr[(x) * ancho + (y) + 2];
+                            ile++;
+                        }           /// Obtenemos los valores promedios de cada pixel de la imagen para poder hacer el blur
+                    }
+                    avgB = avgB / ile;
+                    avgG = avgG / ile;
+                    avgR = avgR / ile;
+
+                    fputc(ptr[(xx) * ancho + (yy) ] = avgB, outputImage);
+                    fputc(ptr[(xx) * ancho + (yy) + 1] = avgG, outputImage);
+                    fputc(ptr[(xx) * ancho + (yy) + 2] = avgR, outputImage);
+                }
+            }
+        
+        free(ptr);
+        fclose(image);
+        fclose(outputImage);
+        
+    }
